@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 描述和约束 xml -->
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<properties>
+	  <property name="driver" value="com.mysql.cj.jdbc.Driver"/>	  
+	</properties>
+	
+	<!-- <settings>
+		<setting name="cacheEnabled" value="true"/>
+		<setting name="lazyLoadingEnabled" value="true"/>
+	</settings> -->
+	<typeAliases>
+	  <typeAlias alias="User" type="com.lixia.pojos.User"/>
+	  <typeAlias alias="Role" type="com.lixia.pojos.Role"/>
+	</typeAliases>
+  <!-- 环境 开发，测试，上线 -->
+  <environments default="development">
+    <environment id="development">
+      <transactionManager type="JDBC"/>
+      <dataSource type="POOLED">
+        <property name="driver" value="${driver}"/>
+        <property name="url" value="jdbc:mysql:///test"/>
+        <property name="username" value="root"/>
+        <property name="password" value="root"/>
+      </dataSource>
+    </environment>
+  </environments>
+  <mappers>
+    <!-- <mapper resource="com/lixia/mapper/UserMapper.xml"/> -->
+    <package name="com/lixia/mapper"/>
+  </mappers>
+</configuration>

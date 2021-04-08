@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lixia.mapper.RoleMapper">
+	<resultMap type="role" id="roleMap">
+	 <id column="Id" property="id"/>
+	 <result column="rolename" property="rolename"/>
+	 <!--一对多 将数据封装到集合中
+	 property 属性
+	 column 关联的字段
+	 ofType需要封装的集合
+	 <collection column="roleid" property="users" ofType="user">
+	     <id column="Id" property="id"/>
+	     <result column="username" property="username"/>
+        <result column="password" property="password"/>
+	     <result column="roleid" property="roleid"/>
+	 </collection >
+	 -->
+	 <!-- 
+	 	column 参数
+	 	select 指向另一个查询的id
+	  -->
+	 <collection column="roleid" property="users" ofType="user" select="com.lixia.mapper.UserMapper.selectUserByRoleid">
+	     
+	 </collection >
+	</resultMap>
+	<select id="queryAll" resultMap="roleMap">
+    select * from role
+  	</select>
+  	<insert id="insert" parameterType="role" >
+  	 insert into role(rolename) values(#{rolename})
+  	</insert>
+  	<update id="update" parameterType="map">
+  	  update role set rolename=#{rolename} where Id = #{id}
+  	</update>
+  	<delete id="delete" parameterType="int">
+  		delete from role where Id=#{id}
+  	</delete>
+</mapper>

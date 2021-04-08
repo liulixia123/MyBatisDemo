@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- <mapper namespace="com.lixia.mapper">
+<sql id="userColumns">Id,username,password </sql>
+  <select id="selectUser" resultType="User">
+    select 
+     <include refid="userColumns"></include>
+     from user where id = #{id}
+  </select>
+  模糊查询
+  	${}代表连接符 简单类型数据的名称必须为value
+  	有sql注入问题，但是可按列值排序
+  
+  <select id="selectLike" resultType="User">
+    select * from user where username like '%${value}%'
+  </select>
+   分页查询 第一种方式
+   <select id="selectPage" parameterType="map" resultType="User">
+    select * from user limit #{index},#{size}
+  </select>
+  分页查询 第二种方式
+  <select id="selectPage" resultType="User">
+    select * from user
+  </select>
+</mapper> -->
+<mapper namespace="com.lixia.mapper.UserMapper">
+  <!-- <select id="queryAll" resultType="user">
+    select * from user
+  </select> -->
+  <select id="queryCombo" parameterType="user" resultType="user">
+    select * from user 
+    <!-- <if test="username != null">
+        and username like '%${username}%'
+    </if>
+    <choose>
+        <when test="username!=null">
+             and username like '%${username}%'
+        </when>
+        <otherwise>
+             and Id = 1
+        </otherwise>
+    </choose>  -->
+    <where>
+        <if test="username != null">
+            and username like '%${username}%'
+        </if>
+        <if test="id != null">
+            and Id= #{id}
+        </if>
+    </where>
+    
+  </select>
+  <select id="queryList" parameterType="int" resultType="user">
+  	 select * from user where Id in
+    <foreach collection="list" item="item"  open="("  close=")" separator=",">
+      #{item}
+    </foreach>
+  </select>
+  
+	<!--  <resultMap type="user" id="userMap">
+	 <id column="Id" property="id"/>
+ <result column="username" property="username"/>
+ <result column="password" property="password"/>
+	</resultMap>
+	<select id="queryAll" resultMap="userMap">
+		select * from user
+	</select> -->
+	<resultMap type="user" id="userMap">
+		 <id column="Id" property="id"/>
+		 <result column="username" property="username"/>
+		 <!--一对一 将数据封装到对象中
+		 property 属性
+		 column 关联的字段
+		 javaType 需要封装的对象类型
+		 -->
+		
+		 <association column="roleid" property="role" javaType="Role">
+		    <id column="Id" property="Id"/>
+		    <result column="rolename" property="rolename"/>
+		 </association> 
+	</resultMap>
+	<select id="queryAll" resultMap="userMap">
+    	select * from user u left join role r on u.roleid = r.Id;
+  	</select>
+  	<!-- 根据roleid查询用户 -->
+	<select id="selectUserByRoleid" parameterType="int" resultType="user">
+		select * from user where roleid = #{roleid}
+	</select>
+</mapper>
